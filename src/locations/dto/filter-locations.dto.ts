@@ -12,4 +12,4 @@ export class FilterLocationsDto {
   @IsOptional()
   @IsString()
   destinoAsignado?: string;
-} 
+}

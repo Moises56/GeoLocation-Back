@@ -21,4 +21,4 @@ export class AuthController {
   async register(@Body() registerDto: any) {
     return this.authService.register(registerDto);
   }
-} 
+}

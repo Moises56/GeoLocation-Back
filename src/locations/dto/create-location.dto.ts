@@ -20,4 +20,8 @@ export class CreateLocationDto {
   @IsNumber()
   @IsOptional()
   tiempoEnDestino?: number;
-} 
+
+  @IsString()
+  @IsOptional()
+  destinoAsignado?: string;
+}

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { LocationsService } from './locations.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -13,11 +23,7 @@ export class LocationsController {
   @Post()
   @Roles('ADMIN', 'MODERATOR', 'OPERADOR')
   create(@Body() createLocationDto: CreateLocationDto, @Req() req: any) {
-    return this.locationsService.create(
-      createLocationDto,
-      req.user.id,
-      req.ip,
-    );
+    return this.locationsService.create(createLocationDto, req.user.id, req.ip);
   }
 
   @Get()
@@ -51,7 +57,12 @@ export class LocationsController {
     @Body() updateLocationDto: any,
     @Req() req: any,
   ) {
-    return this.locationsService.update(id, updateLocationDto, req.user.id, req.ip);
+    return this.locationsService.update(
+      id,
+      updateLocationDto,
+      req.user.id,
+      req.ip,
+    );
   }
 
   @Delete(':id')
@@ -59,4 +70,4 @@ export class LocationsController {
   remove(@Param('id') id: string, @Req() req: any) {
     return this.locationsService.remove(id, req.user.id, req.ip);
   }
-} 
+}

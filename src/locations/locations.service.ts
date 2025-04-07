@@ -6,7 +6,11 @@ import { CreateLocationDto } from './dto/create-location.dto';
 export class LocationsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createLocationDto: CreateLocationDto, userId: string, ip: string) {
+  async create(
+    createLocationDto: CreateLocationDto,
+    userId: string,
+    ip: string,
+  ) {
     // Verificar que el usuario existe
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -175,4 +179,4 @@ export class LocationsService {
       },
     });
   }
-} 
+}

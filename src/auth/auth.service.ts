@@ -15,7 +15,7 @@ export class AuthService {
       where: { nombreUsuario: username },
     });
 
-    if (user && await bcrypt.compare(password, user.contrasena)) {
+    if (user && (await bcrypt.compare(password, user.contrasena))) {
       const { contrasena, ...result } = user;
       return result;
     }
@@ -23,9 +23,23 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.nombreUsuario, sub: user.id, rol: user.rol };
+    const payload = {
+      username: user.nombreUsuario,
+      sub: user.id,
+      rol: user.rol,
+    };
+
     return {
       access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        nombre: user.nombre,
+        apellido: user.apellido,
+        correo: user.correo,
+        nombreUsuario: user.nombreUsuario,
+        rol: user.rol,
+        estado: user.estado,
+      },
     };
   }
 
@@ -40,4 +54,4 @@ export class AuthService {
     const { contrasena, ...result } = user;
     return result;
   }
-} 
+}
