@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+ 
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+ 
+model User {
+  id            String    @id @default(uuid())
+  nombre        String
+  apellido      String
+  correo        String    @unique
+  nombreUsuario String    @unique
+  identidad     String    @unique
+  telefono      String    @unique
+  rol           String    @default("OPERADOR")
+  contrasena    String
+  estado        Boolean   @default(true)
+  locations     Location[]
+  logs          Log[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+ 
+model Location {
+  id              String    @id @default(uuid())
+  key             String?
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  latitud         Float
+  longitud        Float
+  timestamp       DateTime  @default(now())
+  estado          String    @default("activo") // activo, terminado
+  destinoAsignado String?
+  tiempoEnDestino Int?      // En segundos
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+ 
+  @@index([userId])
+}
+ 
+model Log {
+  id          String    @id @default(uuid())
+  key         String?
+  accion      String
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timestamp   DateTime  @default(now())
+  ip          String
+  descripcion String?
+ 
+  @@index([userId])
+} 
