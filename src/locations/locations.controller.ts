@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Req,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { LocationsService } from './locations.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -69,5 +71,20 @@ export class LocationsController {
   @Roles('ADMIN', 'MODERATOR')
   remove(@Param('id') id: string, @Req() req: any) {
     return this.locationsService.remove(id, req.user.id, req.ip);
+  }
+
+  @Get('summary')
+  @Roles('ADMIN', 'MODERATOR', 'OPERADOR')
+  async getSummary(@Req() req: any) {
+    try {
+      const summary = await this.locationsService.getSummary(req.user.id);
+      return summary;
+    } catch (error) {
+      console.error('Error en el controlador getSummary:', error);
+      throw new HttpException({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        error: 'Error al obtener el resumen de ubicaciones',
+      }, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

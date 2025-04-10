@@ -179,4 +179,58 @@ export class LocationsService {
       },
     });
   }
+
+  async getSummary(userId: string) {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Obtener el total de ubicaciones del usuario
+      const totalUbicaciones = await this.prisma.location.count({
+        where: { userId }
+      });
+
+      // Obtener las ubicaciones de hoy
+      const ubicacionesHoy = await this.prisma.location.count({
+        where: {
+          userId,
+          timestamp: {
+            gte: today
+          }
+        }
+      });
+
+      // Obtener la última ubicación
+      const ultimaUbicacion = await this.prisma.location.findFirst({
+        where: { userId },
+        orderBy: { timestamp: 'desc' },
+        include: {
+          user: {
+            select: {
+              id: true,
+              nombre: true,
+              apellido: true,
+              nombreUsuario: true,
+            },
+          },
+        },
+      });
+
+      // Asegurarnos de que siempre devolvemos un objeto, incluso si no hay última ubicación
+      return {
+        totalUbicaciones: totalUbicaciones || 0,
+        ubicacionesHoy: ubicacionesHoy || 0,
+        ultimaUbicacion: ultimaUbicacion || null
+      };
+    } catch (error) {
+      console.error('Error en getSummary:', error);
+      // Devolver un objeto con valores por defecto en caso de error
+      return {
+        totalUbicaciones: 0,
+        ubicacionesHoy: 0,
+        ultimaUbicacion: null,
+        error: 'Error al obtener el resumen'
+      };
+    }
+  }
 }
